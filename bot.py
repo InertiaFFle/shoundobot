@@ -26,14 +26,10 @@ start_time = time.time()
 
 _default_clients["ANDROID_MUSIC"] = _default_clients["ANDROID_CREATOR"]
 
-intents = discord.Intents.none()
-intents.guild_messages = True
-intents.guilds = True
-intents.members = True
+intents = discord.Intents.default()
 intents.message_content = True
-intents.messages = True
-intents.value = True
 intents.voice_states = True
+
 bot = commands.Bot(command_prefix='.', intents=intents)
 bot.voice_channel = None
 
@@ -171,10 +167,11 @@ async def now_playing(ctx):
 @bot.command(aliases=["p"])
 async def play(ctx):
     
-    voice_channel = ctx.author.voice.channel
-    if not voice_channel:
+    if not ctx.author.voice:
         await ctx.send("**:anger: | You need to be in a voice channel to use this command!**")
         return
+
+    voice_channel = ctx.author.voice.channel
     
     if not bot.voice_channel:
         bot.voice_channel = await voice_channel.connect()
@@ -257,14 +254,14 @@ async def play_next_video(ctx):
     bot.queue_box_index += 1
     await play_next_video(ctx)
     
-async def check_if_admin(ctx):
-    if ctx.author.id not in ADMIN_IDS:
-        return False
-    return True
+async def check_is_admin(ctx):
+    if ctx.author.id in ADMIN_IDS:
+        return True
+    return False
 
 @bot.command(aliases=["rr"])
 async def restart_bot(self, ctx):
-    if not await check_if_admin(ctx):
+    if not await check_is_admin(ctx):
         await ctx.send("missing perms")
         return
     print("bot restarting")
@@ -273,7 +270,7 @@ async def restart_bot(self, ctx):
 
 @bot.command(name='stats', aliases=['ss'])
 async def stats(ctx):
-    if not await check_if_admin(ctx):
+    if not await check_is_admin(ctx):
         await ctx.send("missing perms")
         return
     uname = platform.uname()
@@ -302,11 +299,17 @@ async def stats(ctx):
 
 @bot.command(aliases=["ls"])
 async def list_files(ctx):
+    if not await check_is_admin(ctx):
+        await ctx.send("missing perms")
+        return
     files = glob.glob(os.path.join(STORAGE_PATH, '*'))
     await ctx.send(f"Files in storage:\n```\n{', '.join(files)}\n```")
 
 @bot.command(aliases=["lsd"])
 async def delete_files(ctx):
+    if not await check_is_admin(ctx):
+        await ctx.send("missing perms")
+        return
     files = glob.glob(os.path.join(STORAGE_PATH, '*'))
     for file_path in files:
         try:
