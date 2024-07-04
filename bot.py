@@ -26,7 +26,15 @@ start_time = time.time()
 
 _default_clients["ANDROID_MUSIC"] = _default_clients["ANDROID_CREATOR"]
 
-bot = commands.Bot(command_prefix='.', intents=discord.Intents.all())
+intents = discord.Intents.none()
+intents.guild_messages = True
+intents.guilds = True
+intents.members = True
+intents.message_content = True
+intents.messages = True
+intents.value = True
+intents.voice_states = True
+bot = commands.Bot(command_prefix='.', intents=intents)
 bot.voice_channel = None
 
 bot.queue_box = []
@@ -316,7 +324,7 @@ def home():
     return "<b> <center> Shoundobot </center> </b>"
 
 def run():
-    app.run(host='0.0.0.0', port=8080)
+    app.run(host='0.0.0.0', port=80)
 
 def keep_alive():
     t = Thread(target=run)
