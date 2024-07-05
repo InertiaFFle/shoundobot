@@ -20,6 +20,7 @@ from pytube.innertube import _default_clients
 load_dotenv()
 TOKEN = os.getenv('TOKEN')
 ADMIN_IDS = json.loads(os.getenv('ADMIN_IDS'))
+PORT = os.getenv('PORT')
 STORAGE_PATH = "storage"
 
 start_time = time.time()
@@ -327,7 +328,7 @@ def home():
     return "<b> <center> Shoundobot </center> </b>"
 
 def run():
-    app.run(host='0.0.0.0', port=80)
+    app.run(host='0.0.0.0', port=PORT)
 
 def keep_alive():
     t = Thread(target=run)
