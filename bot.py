@@ -21,7 +21,7 @@ start_time = time()
 _default_clients["ANDROID_MUSIC"] = _default_clients["ANDROID_CREATOR"]
 
 load_dotenv()
-TOKEN = os.getenv("TEST_TOKEN")
+TOKEN = os.getenv("TOKEN")
 ADMIN_IDS = json.loads(os.getenv("ADMIN_IDS"))
 PORT = os.getenv("PORT")
 PREFIX = os.getenv("PREFIX")
