@@ -118,7 +118,7 @@ async def shuffle(ctx):
 async def clear_queue(ctx):
     
     if not bot.queue_box:
-        await ctx.send("**:thinking: | THE MUSIC BOX IS ALREADY EMPTYY!**")
+        await ctx.send("**:anger: | THE MUSIC BOX IS ALREADY EMPTYY!**")
         return
     
     bot.queue_box = []
