@@ -17,6 +17,8 @@ import psutil
 import pytube
 from pytube.innertube import _default_clients
 
+VERSION = "1.0.5" # ew manual
+
 start_time = time()
 _default_clients["ANDROID_MUSIC"] = _default_clients["ANDROID_CREATOR"]
 
@@ -184,7 +186,11 @@ async def play(ctx):
     if not ctx.author.voice:
         await ctx.send("**:anger: | nuh uh, you need to be in a voice channel first!!!**")
         return
-
+    
+    if not bot.queue_box:
+        await ctx.send("**:anger: | the music box is- E M P T Y**")
+        return
+    
     voice_channel = ctx.author.voice.channel
     
     if not bot.voice_channel:
@@ -193,10 +199,6 @@ async def play(ctx):
     
     if bot.voice_channel.is_playing() or bot.loading_play:
         await ctx.send("**:anger: | I'M ALREADY PLAYING IT!**")
-        return
-    
-    if not bot.queue_box:
-        await ctx.send("**:anger: | the music box is- E M P T Y**")
         return
     
     await play_next_video(ctx)
@@ -303,26 +305,24 @@ async def restart_bot(ctx):
 @bot.command(aliases=["ss"])
 @commands.check(is_bot_admin)
 async def stats(ctx):
-    uname = platform.uname()
     uptime = time() - start_time
     uptime_str = strftime("%H:%M:%S", gmtime(uptime))
     mem = psutil.virtual_memory()
     disk = psutil.disk_usage("/")
-    
-    cpu_info = f"Physical cores: {psutil.cpu_count(logical=False)}, Total cores: {psutil.cpu_count(logical=True)}, Max Frequency: {psutil.cpu_freq().max:.2f}Mhz"
+    process = psutil.Process(os.getpid())
+    mem_info = process.memory_info().rss
     
     stats_message = (
-        f"**System Information**\n"
-        f"**OS**: {uname.system} {uname.release} ({uname.version})\n"
-        f"**Node**: {uname.node}\n"
-        f"**Machine**: {uname.machine}\n"
-        f"**Processor**: {uname.processor}\n"
-        f"**CPU**: {cpu_info}\n"
-        f"**Uptime**: {uptime_str}\n"
-        f"**Memory**: {mem.total / (1024 ** 3):.2f} GB\n"
-        f"**Memory Used**: {mem.used / (1024 ** 3):.2f} GB ({mem.percent}%)\n"
-        f"**Disk**: {disk.total / (1024 ** 3):.2f} GB\n"
-        f"**Disk Used**: {disk.used / (1024 ** 3):.2f} GB ({disk.percent}%)"
+        "**"
+        f"System Information\n"
+        f"Uptime: `{uptime_str}`\n"
+        f"Memory: `{mem.total / (1024 ** 3):.2f} GB`\n"
+        f"Memory Used: `{mem.used / (1024 ** 3):.2f} GB ({mem.percent}%)`\n"
+        f"Memory Usage: `{mem_info / (1024 * 1024):.2f} MB`\n"
+        f"Disk: `{disk.total / (1024 ** 3):.2f} GB`\n"
+        f"Disk Used: `{disk.used / (1024 ** 3):.2f} GB ({disk.percent}%)`\n"
+        f"Version: `{VERSION}`"
+        "**"
     )
     
     await ctx.send(stats_message)
