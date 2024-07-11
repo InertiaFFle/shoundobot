@@ -71,22 +71,22 @@ async def add(ctx, *, query):
             else:
                 raise
         except Exception:
-            await ctx.send("**:anger: | Invalid YouTube query!**")
+            await ctx.send("**:anger: | no, no! that's an invalid youtube queryy!**")
             return
     
         for video in videos:
             bot.queue_box.append([video.title, video.author, video.watch_url])
         
     if len(videos) == 1:
-        await ctx.send(f"**:eject: | Added to music box:\n`{videos[0].title}`\nby `{videos[0].author}`**")
+        await ctx.send(f"**:eject: | queued:\n`{videos[0].title}`\nby `{videos[0].author}`**")
     else:
-        await ctx.send(f"**:eject: | Added `{len(videos)}` songs to music box!**")
+        await ctx.send(f"**:eject: | added `{len(videos)}` songs to the music box!! :>**")
     
 @bot.command(aliases=["r"])
 async def remove(ctx, index: int = None):
     
     if not bot.queue_box:
-        await ctx.send("**:anger: | The music box is empty!**")
+        await ctx.send("**:anger: | the music box is EMPTY!!! >:(**")
         return
     
     try:
@@ -94,44 +94,44 @@ async def remove(ctx, index: int = None):
         if not 0 <= index < len(bot.queue_box):
             raise ValueError
     except (ValueError, TypeError):
-        await ctx.send(f"**:anger: | Invalid index query!\nIt must be a number that ranges from 0 to {len(bot.queue_box) - 1}!**")
+        await ctx.send(f"**:anger: | oops! Invalid index queryyy! :c\nIt must be a number that ranges from 0 to {len(bot.queue_box) - 1}! >:(**")
         return
 
     video = bot.queue_box.pop(index)
-    await ctx.send(f"**:wastebasket: | `[{index:02}]` Removed from music box:\n`{video[0]}`\nby `{video[1]}`**")
+    await ctx.send(f"**:wastebasket: | yeeted `[{index:02}]` from the music box >:D\n`{video[0]}`\nby `{video[1]}`**")
     
 @bot.command(aliases=["sh"])
 async def shuffle(ctx):
     
     if not bot.queue_box:
-        await ctx.send("**:anger: | The music box is empty! how about you shuffle deez nuts?**")
+        await ctx.send("**:anger: | the music box is emptyy... how bout u shuffle deeznuts?**")
         return
     
     if len(bot.queue_box) == 1:
-        await ctx.send("**:anger: | Shuffling 1 song for you!**")
+        await ctx.send("**:anger: | shuffwing 1 song for youuu :D**")
         return
     
     random.shuffle(bot.queue_box)
-    await ctx.send("**:twisted_rightwards_arrows: | Successfully shuffled the music box!**")
+    await ctx.send("**:twisted_rightwards_arrows: | i shuffwled the music box! :DD**")
     
 @bot.command(aliases=["cq"])
 async def clear_queue(ctx):
     
     if not bot.queue_box:
-        await ctx.send("**:thinking: | The music box is already empty!**")
+        await ctx.send("**:thinking: | THE MUSIC BOX IS ALREADY EMPTYY!**")
         return
     
     bot.queue_box = []
-    await ctx.send("**:wastebasket: | Destroyed the music box!**")
+    await ctx.send("**:wastebasket: | i destroyed the music box >:D**")
 
 @bot.command(aliases=["l"])
 async def loop(ctx):
     bot.queue_loop = not bot.queue_loop
     
     if bot.queue_loop:
-        await ctx.send("**:repeat: | The music box is now looping!**")
+        await ctx.send("**:repeat: | the music box is now looping ;)**")
     else:
-        await ctx.send("**:fast_forward: | Music box is no longer looping!**")
+        await ctx.send("**:fast_forward: | the music box is no longer looping ;(**")
 
 @bot.command(aliases=["q"])
 async def queue(ctx):
@@ -142,7 +142,7 @@ async def queue(ctx):
             queue_list.append(f"**`[{index:02}]` - {video[0]}\nby {video[1]}**")
         
         if not queue_list:
-            await ctx.send("**:o: | Music box is empty :(**")
+            await ctx.send("**:o: | the music box is empty :((**")
             return
     
         chunks = [queue_list[i:i + 10] for i in range(0, len(queue_list), 10)]
@@ -167,36 +167,36 @@ async def queue(ctx):
 async def now_playing(ctx):
     
     if not bot.voice_channel:
-        await ctx.send("**:anger: | I'm not even connected to a voice channel!**")
+        await ctx.send("**:anger: | i'm not even in a voice channel...**")
         return
     
     if not bot.voice_channel.is_playing():
-        await ctx.send("**:anger: | I'm not playing anything!**")
+        await ctx.send("**:anger: | i'm not playing anything yet! >:(**")
         return
     
     current_video = bot.queue_box[bot.queue_box_index]
     index_status = f"`[{bot.queue_box_index}/{len(bot.queue_box)}]`"
-    await ctx.send(f"**:musical_note: | Currently playing {index_status}:\n{current_video[0]}\nby `{current_video[1]}`**")
+    await ctx.send(f"**:musical_note: | currently playing {index_status}:\n{current_video[0]}\nby `{current_video[1]}`**")
     
 @bot.command(aliases=["p"])
 async def play(ctx):
     
     if not ctx.author.voice:
-        await ctx.send("**:anger: | You need to be in a voice channel to use this command!**")
+        await ctx.send("**:anger: | nuh uh, you need to be in a voice channel first!!!**")
         return
 
     voice_channel = ctx.author.voice.channel
     
     if not bot.voice_channel:
-        await ctx.send("**:musical_note: | Joining the voice chat!**")
+        await ctx.send("**:musical_note: | joining the voice channel with you ;)**", delete_after=30)
         bot.voice_channel = await voice_channel.connect()
     
     if bot.voice_channel.is_playing() or bot.loading_play:
-        await ctx.send("**:anger: | I'm already playing the music box!**")
+        await ctx.send("**:anger: | I'M ALREADY PLAYING IT!**")
         return
     
     if not bot.queue_box:
-        await ctx.send("**:anger: | Music box is empty!**")
+        await ctx.send("**:anger: | the music box is- E M P T Y**")
         return
     
     await play_next_video(ctx)
@@ -205,37 +205,37 @@ async def play(ctx):
 async def skip(ctx, index: int = None):
 
     if not bot.queue_box:
-        await ctx.send("**:anger: | Music box is empty!**")
+        await ctx.send("**:anger: | skip what?? the music box is empty! >:(**")
         return 
 
     if not ctx.voice_client:
-        await ctx.send("**:anger: | I'm not in a voice channel!**")
+        await ctx.send("**:anger: | i'm not in a voice channel??**")
         return 
 
     if not ctx.voice_client.is_playing():
-        await ctx.send("**:anger: | I'm not playing anything!**")
+        await ctx.send("**:anger: | i'm not playing anything!!**")
         return 
 
     if index is not None:
         if not isinstance(index, int) or not 0 <= index < len(bot.queue_box):
             index_range = f"0 to {len(bot.queue_box) - 1}"
-            await ctx.send(f"**:anger: | Invalid index query!\nIt must be a number that ranges from {index_range}!**")
+            await ctx.send(f"**:anger: | nope, that's an invalid index queryy!\nIt must be a number that ranges from {index_range}!**")
             return
         bot.queue_box_index = index - 1
 
-    await ctx.send("**:fast_forward: | Skipped the current song!**")
+    await ctx.send("**:fast_forward: | skipped the current song! :>**")
     ctx.voice_client.stop()
 
 @bot.command(aliases=["dc"])
 async def disconnect(ctx):
     
     if not bot.voice_channel:
-        await ctx.send("**:anger: | I'm not in a voice channel!**")
+        await ctx.send("**:anger: | i disconnected from nothing**")
     
     bot.queue_box = []
     bot.queue_box_index = 0
     await bot.voice_channel.disconnect()
-    await ctx.send("**:ballot_box_with_check: | Disconnected! (And destroyed the music box)**")
+    await ctx.send("**:ballot_box_with_check: | i left the VC, Bye bye! :D (i destroyed the music box as well >:D)**")
 
 async def play_next_video(ctx):
     bot.loading_play = True
@@ -249,17 +249,17 @@ async def play_next_video(ctx):
         bot.voice_channel = None
         bot.queue_box_index = 0
         bot.loading_play = False
-        await ctx.send("**:ballot_box_with_check: | Queue finished! leaving the voice channel...**")
+        await ctx.send("**:ballot_box_with_check: | queue finished :D\nleaving the voice channel :)**")
         return
     
     if (not bot.queue_box_index) and bot.queue_loop:
         bot.queue_loop = False
         bot.loading_play = False
-        await ctx.send("**:anger: | The queue is empty! I'm disabling the loop now**")
+        await ctx.send("**:anger: | someone cleared the music box >:(\ni'm disabling the loop now..**")
         return
     
     if bot.queue_box_index > len(bot.queue_box) - 1 and bot.queue_loop:
-        await ctx.send("**:ballot_box_with_check: | Queue finished! Looping to index 0...**")
+        await ctx.send("**:ballot_box_with_check: | queue finished :D!\nlooping back to index 0...**")
         bot.queue_box_index = 0
     
     async with ctx.typing():
@@ -290,7 +290,7 @@ async def on_command_error(ctx, error):
         if await not_in_dm(ctx) is False:
             return
         elif not await is_bot_admin(ctx):
-            await ctx.send("You're not a bot admin", delete_after=30)
+            await ctx.send("you're not a bot admin :P", delete_after=30)
     else:
         raise error
 
@@ -332,7 +332,7 @@ async def stats(ctx):
 async def list_files(ctx):
     files = glob(STORAGE_PATH + "/*.webm")
     files_list = "\n".join([file for file in files]) or "empty"
-    await ctx.send(f"Files in {STORAGE_PATH}:\n```\n{files_list}\n```")
+    await ctx.send(f"files in {STORAGE_PATH}:\n```\n{files_list}\n```")
 
 @bot.command(aliases=["lsd"])
 @commands.check(is_bot_admin)
@@ -340,7 +340,7 @@ async def delete_files(ctx):
     files = glob(STORAGE_PATH + "/*.webm")
     for file in files:
         os.remove(file)
-    await ctx.send(f"All files in {STORAGE_PATH} have been deleted")
+    await ctx.send(f"all files in {STORAGE_PATH} have been deleted")
 
 app = Flask(__name__)
 
