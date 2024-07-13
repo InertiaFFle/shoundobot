@@ -14,16 +14,16 @@ from dotenv import load_dotenv
 from flask import Flask
 from threading import Thread
 import psutil
-import pytube
-from pytube.innertube import _default_clients
+import pytubefix
+from pytubefix.innertube import _default_clients
 
-VERSION = "1.0.5" # ew manual
+VERSION = "1.0.6" # ew manual
 
 start_time = time()
 _default_clients["ANDROID_MUSIC"] = _default_clients["ANDROID_CREATOR"]
 
 load_dotenv()
-TOKEN = os.getenv("TOKEN")
+TOKEN = os.getenv("DEVTOKEN")
 ADMIN_IDS = json.loads(os.getenv("ADMIN_IDS"))
 PORT = os.getenv("PORT")
 PREFIX = os.getenv("PREFIX")
@@ -64,11 +64,11 @@ async def add(ctx, *, query):
     async with ctx.typing():
         try:
             if "https://" not in query:
-                videos = pytube.Search(query).results[:1]
+                videos = pytubefix.Search(query).results[:1]
             elif "watch" in query:
-                videos = [pytube.YouTube(query)]
+                videos = [pytubefix.YouTube(query)]
             elif "playlist" in query:
-                playlist = pytube.Playlist(query)
+                playlist = pytubefix.Playlist(query)
                 videos = playlist.videos
             else:
                 raise
@@ -265,7 +265,7 @@ async def play_next_video(ctx):
         bot.queue_box_index = 0
     
     async with ctx.typing():
-        current_video = pytube.YouTube(bot.queue_box[bot.queue_box_index][2])
+        current_video = pytubefix.YouTube(bot.queue_box[bot.queue_box_index][2])
         audio_stream = current_video.streams.filter(only_audio=True).order_by("abr").desc().first()
         audio_file = audio_stream.download(output_path=STORAGE_PATH)
         #bot.voice_channel.play(discord.FFmpegPCMAudio(audio_stream.url))
