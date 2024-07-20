@@ -323,14 +323,13 @@ class MusicplayerCog(commands.Cog):
             await ctx.send(f"**:anger: | you must put a valid index!! (0 to {max_index} only!)**")
         except Exception as error:
             await ctx.send(f"**:bangbang: | unexpected error occurred!\n```\n{error}\n```")
-    
+
+async def is_bot_admin(ctx):
+    return ctx.author.id in ADMIN_IDS
+
 class AdminCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        
-    @staticmethod
-    async def is_bot_admin(ctx):
-        return ctx.author.id in ADMIN_IDS
         
     @commands.check
     async def not_in_dm(self, ctx):
